@@ -25,11 +25,20 @@ form === null || form === void 0 ? void 0 : form.addEventListener('submit', (eve
     try {
         const resposta = yield fetch(`https://api.openweathermap.org/data/2.5/weather?q=${localizacao}&lang=pt_br&units=metric&appid=e8e2511e8fba822dabdc17679383a4e7`);
         const dados = yield resposta.json();
+        if (resposta.status === 404) {
+            alert('Cidade não encontrada');
+            return;
+        }
         const infos = {
             temperatura: Math.round(dados.main.temp),
             local: dados.name,
             icone: `https://openweathermap.org/img/wn/${dados.weather[0].icon}@2x.png`
         };
+        // Reinicia a animação
+        sectionInfo.style.animation = 'none';
+        void sectionInfo.offsetHeight; // Força o reflow do navegador
+        sectionInfo.style.animation = 'fadeIn 0.8s ease-in-out';
+
         sectionInfo.innerHTML = `
             <div class="local-temp">
                 <h2 class="local">${infos.local}</h2>
